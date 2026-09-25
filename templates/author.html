@@ -1,0 +1,38 @@
+{% include "header.html" %}
+
+<header class="author-hero">
+  <div class="container">
+    <img src="{{ author.email | gravatar(size=96) }}" alt="{{ author.name }}">
+    <h1>{{ author.name }}</h1>
+    <p class="mb-0">{{ posts|length }} post{{ 's' if posts|length != 1 else '' }} published</p>
+  </div>
+</header>
+
+<div class="container px-4 px-lg-5 py-5">
+  <div class="row gx-4 gx-lg-5 justify-content-center">
+    <div class="col-md-11 col-lg-10 col-xl-9">
+      <div class="row gx-4 gx-lg-5">
+        {% for post in posts %}
+        <div class="col-md-6 mb-4">
+          <div class="card blog-card h-100">
+            <a href="{{ url_for('show_post', post_id=post.id) }}">
+              <img src="{{ post.img_url }}" class="card-img-top" alt="{{ post.title }}">
+            </a>
+            <div class="card-body">
+              <span class="badge category-badge mb-2" data-category="{{ post.category }}">{{ post.category }}</span>
+              <h3 class="card-title"><a href="{{ url_for('show_post', post_id=post.id) }}">{{ post.title }}</a></h3>
+              <p class="text-muted small mb-0">{{ post.date }} &middot; {{ post.reading_time }} min read &middot; <i class="far fa-eye"></i> {{ post.views }} &middot; <i class="fas fa-heart"></i> {{ post.like_count }}</p>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <p class="mb-0">No posts published yet.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include "footer.html" %}

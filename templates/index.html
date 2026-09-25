@@ -10,53 +10,122 @@
       <div class="col-md-10 col-lg-8 col-xl-7">
         <div class="site-heading">
           <h1>Atreyee's Blog</h1>
-          <span class="subheading">A collection of random musings.</span>
+          <span class="subheading">Notes on data, code, and figuring things out.</span>
         </div>
       </div>
     </div>
   </div>
 </header>
-<!-- Main Content-->
-<div class="container px-4 px-lg-5">
-  <div class="row gx-4 gx-lg-5 justify-content-center">
-    <div class="col-md-10 col-lg-8 col-xl-7">
-      <!-- Post preview-->
-      {% for post in all_posts %}
-      <div class="post-preview">
-        <a href="{{ url_for('show_post', post_id=post.id) }}">
-          <h2 class="post-title">{{ post.title }}</h2>
-          <h3 class="post-subtitle">{{ post.subtitle }}</h3>
-        </a>
-        <p class="post-meta">
-          Posted by
-          <a href="#">{{post.author.name}}</a>
-          on {{post.date}}
-          <!--  Only show delete button if user id is 1 (admin user) -->
-          {% if current_user.id==1 %}
-          <a href="{{url_for('delete_post', post_id=post.id) }}">✘</a>
-          {% endif %}
-        </p>
-      </div>
-      <!-- Divider-->
-      <hr class="my-4" />
-      {% endfor %}
 
-      <!-- New Post -->
-      <!-- TODO: Only show Create Post button if user id is 1 (admin user) -->
-        {% if current_user.id==1 %}
-      <div class="d-flex justify-content-end mb-4">
-        <a
-          class="btn btn-primary float-right"
-          href="{{url_for('add_new_post')}}"
-          >Create New Post</a
-        >
+<!-- Main Content-->
+<div class="container px-4 px-lg-5 py-4">
+  <div class="row gx-4 gx-lg-5 justify-content-center">
+    <div class="col-md-11 col-lg-10 col-xl-9">
+
+      {% if search_query %}
+      <div class="filter-banner">
+        <span>Showing results for <strong>&ldquo;{{ search_query }}&rdquo;</strong> ({{ pagination.total }} post{{ 's' if pagination.total != 1 else '' }})</span>
+        <a href="{{ url_for('get_all_posts') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+      </div>
+      {% elif active_category %}
+      <div class="filter-banner">
+        <span>Category: <strong>{{ active_category }}</strong> ({{ pagination.total }} post{{ 's' if pagination.total != 1 else '' }})</span>
+        <a href="{{ url_for('get_all_posts') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
       </div>
       {% endif %}
 
-      <!-- Pager-->
+      {% if current_user.is_authenticated and current_user.id == 1 %}
       <div class="d-flex justify-content-end mb-4">
-        <a class="btn btn-secondary text-uppercase" href="#!">Older Posts →</a>
+        <a class="btn btn-primary" href="{{ url_for('add_new_post') }}">
+          <i class="fas fa-plus me-1"></i> Create New Post
+        </a>
       </div>
+      {% endif %}
+
+      {% if not all_posts %}
+        <div class="empty-state">
+          <i class="fas fa-inbox fa-2x mb-3"></i>
+          <p class="mb-0">No posts to show here yet.</p>
+        </div>
+      {% endif %}
+
+      {# --- Featured hero post: only on an unfiltered page 1 --- #}
+      {% set featured = all_posts[0] if (all_posts and pagination.page == 1 and not search_query and not active_category) else None %}
+      {% set grid_posts = all_posts[1:] if featured else all_posts %}
+
+      {% if featured %}
+      <div class="featured-post">
+        <a href="{{ url_for('show_post', post_id=featured.id) }}">
+          <img src="{{ featured.img_url }}" class="featured-img" alt="{{ featured.title }}">
+        </a>
+        <div class="p-4 p-lg-5 bg-white">
+          <span class="featured-label"><i class="fas fa-star"></i> Latest post</span>
+          <span class="badge category-badge ms-2" data-category="{{ featured.category }}">{{ featured.category }}</span>
+          <h2 class="mt-3 mb-2"><a href="{{ url_for('show_post', post_id=featured.id) }}">{{ featured.title }}</a></h2>
+          <p class="text-muted">{{ featured.subtitle }}</p>
+          <p>{{ featured.body | striptags | truncate(220) }}</p>
+          <div class="post-meta-row d-flex flex-wrap align-items-center gap-3 mt-3">
+            <span><a href="{{ url_for('author_profile', user_id=featured.author.id) }}">{{ featured.author.name }}</a></span>
+            <span><i class="far fa-calendar"></i>{{ featured.date }}</span>
+            <span><i class="far fa-clock"></i>{{ featured.reading_time }} min read</span>
+            <span><i class="far fa-eye"></i>{{ featured.views }}</span>
+            <span><i class="fas fa-heart"></i>{{ featured.like_count }}</span>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="row gx-4 gx-lg-5">
+        {% for post in grid_posts %}
+        <div class="col-md-6 mb-4">
+          <div class="card blog-card h-100">
+            <a href="{{ url_for('show_post', post_id=post.id) }}">
+              <img src="{{ post.img_url }}" class="card-img-top" alt="{{ post.title }}">
+            </a>
+            <div class="card-body d-flex flex-column">
+              <a href="{{ url_for('category_posts', category_name=post.category) }}" class="badge category-badge mb-2" data-category="{{ post.category }}">{{ post.category }}</a>
+              <h3 class="card-title"><a href="{{ url_for('show_post', post_id=post.id) }}">{{ post.title }}</a></h3>
+              <p class="text-muted small mb-3">{{ post.subtitle }}</p>
+              <div class="post-meta-row d-flex flex-wrap align-items-center gap-2 mt-auto pt-2 border-top">
+                <span><a href="{{ url_for('author_profile', user_id=post.author.id) }}">{{ post.author.name }}</a></span>
+                <span><i class="far fa-clock"></i>{{ post.reading_time }} min</span>
+                <span><i class="far fa-eye"></i>{{ post.views }}</span>
+                <span><i class="fas fa-heart"></i>{{ post.like_count }}</span>
+                {% if current_user.is_authenticated and current_user.id == 1 %}
+                <a href="{{ url_for('delete_post', post_id=post.id) }}" class="ms-auto text-danger" onclick="return confirm('Delete this post?')" title="Delete post">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if pagination and pagination.pages > 1 %}
+      <nav aria-label="Post pagination" class="my-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(pagination_endpoint, page=pagination.prev_num, **pagination_kwargs) if pagination.has_prev else '#' }}">Previous</a>
+          </li>
+          {% for p in pagination.iter_pages() %}
+            {% if p %}
+              <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for(pagination_endpoint, page=p, **pagination_kwargs) }}">{{ p }}</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+            {% endif %}
+          {% endfor %}
+          <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for(pagination_endpoint, page=pagination.next_num, **pagination_kwargs) if pagination.has_next else '#' }}">Next</a>
+          </li>
+        </ul>
+      </nav>
+      {% endif %}
+
     </div>
   </div>
 </div>

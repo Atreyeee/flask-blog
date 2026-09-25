@@ -1,0 +1,190 @@
+/* =========================================================
+   Custom enhancements for Atreyee's Blog
+   (kept separate from the generated Bootstrap styles.css)
+   ========================================================= */
+
+/* ---------- Card grid ---------- */
+.blog-card {
+  border: none;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.blog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.13);
+}
+.blog-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+.blog-card .card-title {
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+.blog-card .card-title a {
+  color: #212529;
+  text-decoration: none;
+}
+.blog-card .card-title a:hover {
+  color: #0085a1;
+}
+
+/* ---------- Category badges ---------- */
+.category-badge {
+  display: inline-block;
+  padding: 0.3em 0.75em;
+  border-radius: 50rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  background-color: #0085a1;
+  width: fit-content;
+  text-decoration: none;
+}
+a.category-badge:hover {
+  opacity: 0.85;
+  color: #fff;
+}
+.category-badge[data-category="Technology"] { background-color: #0085a1; }
+.category-badge[data-category="Data Science"] { background-color: #6f42c1; }
+.category-badge[data-category="Web Development"] { background-color: #198754; }
+.category-badge[data-category="Career"] { background-color: #d63384; }
+.category-badge[data-category="Productivity"] { background-color: #fd7e14; }
+.category-badge[data-category="Personal"] { background-color: #6c757d; }
+
+/* ---------- Featured post hero ---------- */
+.featured-post {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.12);
+  margin-bottom: 3.5rem;
+}
+.featured-post .featured-img {
+  height: 340px;
+  object-fit: cover;
+  width: 100%;
+}
+.featured-label {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  color: #0085a1;
+}
+.featured-post h2 a {
+  color: #212529;
+  text-decoration: none;
+}
+.featured-post h2 a:hover {
+  color: #0085a1;
+}
+
+/* ---------- Meta row (author / date / reading time / views / likes) ---------- */
+.post-meta-row {
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+.post-meta-row i {
+  margin-right: 0.25rem;
+}
+.post-meta-row a {
+  color: #495057;
+  text-decoration: none;
+  font-weight: 600;
+}
+.post-meta-row a:hover {
+  color: #0085a1;
+}
+
+/* ---------- Like button ---------- */
+.like-btn {
+  border: 1px solid #dee2e6;
+  background: #fff;
+  border-radius: 50rem;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.9rem;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.like-btn:hover {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+.like-btn.liked {
+  background-color: #fdeeef;
+  border-color: #dc3545;
+  color: #dc3545;
+}
+.like-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ---------- Search ---------- */
+.search-form input.form-control:focus {
+  box-shadow: none;
+  border-color: #0085a1;
+}
+
+/* ---------- Pagination ---------- */
+.pagination .page-link {
+  color: #0085a1;
+}
+.pagination .page-item.active .page-link {
+  background-color: #0085a1;
+  border-color: #0085a1;
+}
+
+/* ---------- Filter / search banner ---------- */
+.filter-banner {
+  background-color: #f8f9fa;
+  border-left: 4px solid #0085a1;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 2.25rem;
+  border-radius: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- Author profile hero ---------- */
+.author-hero {
+  background: linear-gradient(135deg, #0085a1 0%, #212529 100%);
+  color: #fff;
+  padding: 4rem 0 3rem;
+  text-align: center;
+}
+.author-hero img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  margin-bottom: 1rem;
+}
+.author-hero p {
+  opacity: 0.9;
+}
+
+/* ---------- Comments ---------- */
+.comment-delete {
+  font-size: 0.78rem;
+  color: #dc3545;
+  text-decoration: none;
+}
+.comment-delete:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #6c757d;
+}

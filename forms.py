@@ -1,24 +1,36 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField,PasswordField
-from wtforms.validators import DataRequired, URL,Email
+from wtforms import StringField, SubmitField, PasswordField, SelectField
+from wtforms.validators import DataRequired, URL
 from flask_ckeditor import CKEditorField
+
+# Shared list of blog categories (imported by main.py too, so it's defined once)
+CATEGORIES = [
+    "Technology",
+    "Data Science",
+    "Web Development",
+    "Career",
+    "Productivity",
+    "Personal",
+]
 
 
 # WTForm for creating a blog post
 class CreatePostForm(FlaskForm):
     title = StringField("Blog Post Title", validators=[DataRequired()])
     subtitle = StringField("Subtitle", validators=[DataRequired()])
+    category = SelectField("Category", choices=[(c, c) for c in CATEGORIES], validators=[DataRequired()])
     img_url = StringField("Blog Image URL", validators=[DataRequired(), URL()])
     body = CKEditorField("Blog Content", validators=[DataRequired()])
     submit = SubmitField("Submit Post")
 
 
-#Create a RegisterForm to register new users
+# Create a RegisterForm to register new users
 class RegisterForm(FlaskForm):
-    email=StringField("E-Mail",validators=[DataRequired()])
-    password=PasswordField("Password",validators=[DataRequired()])
-    name=StringField("Name",validators=[DataRequired()])
-    submit=SubmitField("Sign Me UP")
+    email = StringField("E-Mail", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    name = StringField("Name", validators=[DataRequired()])
+    submit = SubmitField("Sign Me UP")
+
 
 # Create a LoginForm to login existing users
 class LoginForm(FlaskForm):
@@ -26,7 +38,8 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("LET ME IN")
 
+
 # Create a CommentForm so users can leave comments below posts
 class CommentForm(FlaskForm):
-    comment=CKEditorField("Comment", validators=[DataRequired()])
-    submit=SubmitField("Submit Comment")
+    comment = CKEditorField("Comment", validators=[DataRequired()])
+    submit = SubmitField("Submit Comment")

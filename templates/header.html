@@ -6,8 +6,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta name="description" content="Atreyee's Blog - musings on data, code and career" />
+    <meta name="author" content="Atreyee Das" />
     <title>Atreyee's Blog</title>
     {% block styles %}
     <!-- Load Bootstrap-Flask CSS here -->
@@ -38,13 +38,18 @@
       href="{{ url_for('static', filename='css/styles.css') }}"
       rel="stylesheet"
     />
+    <!-- Custom enhancements -->
+    <link
+      href="{{ url_for('static', filename='css/custom.css') }}"
+      rel="stylesheet"
+    />
     {% endblock %}
   </head>
   <body>
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
       <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="/">Start Bootstrap</a>
+        <a class="navbar-brand" href="{{ url_for('get_all_posts') }}">Atreyee's Blog</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -58,7 +63,7 @@
           <i class="fas fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ms-auto py-4 py-lg-0">
+          <ul class="navbar-nav ms-auto py-4 py-lg-0 align-items-lg-center">
             <li class="nav-item">
               <a
                 class="nav-link px-lg-3 py-3 py-lg-4"
@@ -66,7 +71,54 @@
                 >Home</a
               >
             </li>
-            <!--  Only show Login/Register if user is logged out. Otherwise show "Log Out" -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4"
+                href="#"
+                id="categoriesDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                >Categories</a
+              >
+              <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                {% for cat in all_categories %}
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('category_posts', category_name=cat) }}">{{ cat }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('about') }}"
+                >About</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('contact') }}"
+                >Contact</a
+              >
+            </li>
+            <li class="nav-item px-lg-2 py-2 py-lg-0">
+              <form class="d-flex search-form" role="search" action="{{ url_for('search') }}" method="get">
+                <input
+                  class="form-control form-control-sm me-2"
+                  type="search"
+                  name="q"
+                  placeholder="Search posts..."
+                  value="{{ request.args.get('q', '') }}"
+                  aria-label="Search"
+                />
+                <button class="btn btn-sm btn-outline-primary" type="submit">
+                  <i class="fas fa-search"></i>
+                </button>
+              </form>
+            </li>
+            <!--  Only show Login/Register if user is logged out. Otherwise show profile + Log Out -->
             {% if not current_user.is_authenticated: %}
             <li class="nav-item">
               <a
@@ -86,28 +138,26 @@
             <li class="nav-item">
               <a
                 class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('author_profile', user_id=current_user.id) }}"
+              >
+                <img
+                  src="{{ current_user.email | gravatar(size=24) }}"
+                  class="rounded-circle me-1"
+                  alt="avatar"
+                  style="width: 22px; height: 22px;"
+                />
+                {{ current_user.name.split(' ')[0] }}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
                 href="{{ url_for('logout') }}"
                 >Log Out</a
               >
             </li>
             {% endif %}
-            <li class="nav-item">
-              <a
-                class="nav-link px-lg-3 py-3 py-lg-4"
-                href="{{ url_for('about') }}"
-                >About</a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link px-lg-3 py-3 py-lg-4"
-                href="{{ url_for('contact') }}"
-                >Contact</a
-              >
-            </li>
           </ul>
         </div>
       </div>
     </nav>
-  </body>
-</html>

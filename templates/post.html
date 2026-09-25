@@ -7,11 +7,12 @@
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
         <div class="post-heading">
+          <span class="badge category-badge mb-2" data-category="{{ post.category }}">{{ post.category }}</span>
           <h1>{{ post.title }}</h1>
           <h2 class="subheading">{{ post.subtitle }}</h2>
           <span class="meta"
             >Posted by
-            <a href="#">{{ post.author.name }}</a>
+            <a href="{{ url_for('author_profile', user_id=post.author.id) }}">{{ post.author.name }}</a>
             on {{ post.date }}
           </span>
         </div>
@@ -25,9 +26,25 @@
   <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
       <div class="col-md-10 col-lg-8 col-xl-7">
+
+        <div class="post-meta-row d-flex flex-wrap align-items-center gap-3 mb-4 pb-3 border-bottom">
+          <span><i class="far fa-clock"></i>{{ post.reading_time }} min read</span>
+          <span><i class="far fa-eye"></i>{{ post.views }} views</span>
+          <span><i class="far fa-comment"></i>{{ post.comments|length }} comments</span>
+          <form method="POST" action="{{ url_for('like_post', post_id=post.id) }}" class="ms-auto mb-0">
+            <button
+              type="submit"
+              class="like-btn {% if post.is_liked_by(current_user) %}liked{% endif %}"
+              {% if not current_user.is_authenticated %}disabled title="Log in to like this post"{% endif %}
+            >
+              <i class="fa{{ 's' if post.is_liked_by(current_user) else 'r' }} fa-heart"></i> {{ post.like_count }}
+            </button>
+          </form>
+        </div>
+
         {{ post.body|safe }}
         <!-- Only show Edit Post button if user id is 1 (admin user) -->
-        {% if current_user.id ==1 %}
+        {% if current_user.is_authenticated and current_user.id == 1 %}
         <div class="d-flex justify-content-end mb-4">
           <a
             class="btn btn-primary float-right"
@@ -38,11 +55,9 @@
         {% endif %}
 
         <!-- Comments Area -->
-        <!--  Add a CKEditor for commenting below -->
         {{ckeditor.load()}}
         {{ render_form(comment_form)}}
         <div class="comment">
-          <!--Show all the comments on a post -->
           <ul class="commentList">
             {% for comment in post.comments %}
             <li>
@@ -51,7 +66,12 @@
               </div>
               <div class="commentText">
                 <p>{{comment.text | safe}}</p>
-                <span class="date sub-text">{{comment.comment_author.name}}</span>
+                <span class="date sub-text">
+                  {{comment.comment_author.name}}
+                  {% if current_user.is_authenticated and (current_user.id == comment.author_id or current_user.id == 1) %}
+                  &middot; <a class="comment-delete" href="{{ url_for('delete_comment', comment_id=comment.id) }}" onclick="return confirm('Delete this comment?')">Delete</a>
+                  {% endif %}
+                </span>
               </div>
             </li>
             {% endfor %}
