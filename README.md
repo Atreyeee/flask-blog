@@ -1,4 +1,4 @@
-# Flask Blog with Users
+# Flask Blog 
 
 A full-stack blog application built with **Flask**, featuring user authentication, blog post creation, editing, deletion, and author-specific content management.
 
